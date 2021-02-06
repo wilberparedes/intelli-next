@@ -24,7 +24,19 @@ class SplashScreen extends Component{
         if(cpermission == 'no'){
             if(this.state.permissionGPS){
                 AsyncStorage.setItem('@permission', 'si');
-                this.props.navigation.navigate('Loading');
+                // this.props.navigation.navigate('Loading');
+                this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'Loading',
+                          params: { user: 'init' },
+                        },
+                      ],
+                    })
+                );
+                
             }else{
                 AsyncStorage.setItem('@permission', 'no');
                 this.props.navigation.navigate('SliderPermission');
@@ -32,7 +44,18 @@ class SplashScreen extends Component{
         }else{
             if(this.state.permissionGPS){
                 AsyncStorage.setItem('@permission', 'si');
-                this.props.navigation.navigate('Loading');
+                // this.props.navigation.navigate('Loading');
+                this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'Loading',
+                          params: { user: 'init' },
+                        },
+                      ],
+                    })
+                );
             }else{
                 AsyncStorage.setItem('@permission', 'no');
                 this.props.navigation.navigate('SliderPermission');

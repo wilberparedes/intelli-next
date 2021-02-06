@@ -35,7 +35,7 @@ const styles = {
         backgroundColor: 'transparent'
     },
     buttonSecond:{
-        marginHorizontal: 10,
+        marginHorizontal: 20,
         borderRadius: 18,
         paddingVertical: 10,
         backgroundColor: Colors.second,

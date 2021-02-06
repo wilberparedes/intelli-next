@@ -1,78 +1,42 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image, Alert, StatusBar, Linking} from 'react-native';
+import React from 'react';
+import {View, StyleSheet } from 'react-native';
 import {connect} from 'react-redux';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import { Avatar, Title, Caption, Drawer, RadioButton, Paragraph, TouchableRipple, Switch } from 'react-native-paper';
-import { Rating } from 'react-native-elements';
-import {Fonts, Colors, StylesGeneral, Metrics} from '../../themes';
+import { Drawer } from 'react-native-paper';
+import {Fonts, Colors, Functions} from '../../themes';
 
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import DrawerItem from './DrawerItem';
 
 const DrawerContent = (props) => {
 
-    // console.log('..........................');
-    // console.log(props);
-
-
-    const { dataUser } = props;
+    const { modules } = props;
     
     return(
         <>
             <DrawerContentScrollView {...props} style={{flex:1}} >
                 <View style={{}}>
                     <View style={styles.drawerContent}>
-                        <TouchableNativeFeedback style={styles.userInfoSection} onPress={() => props.navigation.push('MyProfile')}>
-                            <View style={{flexDirection: 'row'}}>
-                                <Avatar.Image
-                                    source={{
-                                    uri:
-                                        URL_MEDIA + dataUser.foto,  
-                                    }}
-                                    size={50}
-                                    />
-                                <View style={{marginLeft: 10}}>
-                                    <Title style={styles.title}>{dataUser.nombres} {dataUser.apellidos}</Title>
-                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                        <Rating readonly={true} imageSize={16} ratingColor='#F3911A' type='custom' fractions={1} startingValue={parseFloat(dataUser.valoracion)} style={{marginRight: 5}}  />
-                                        <Text style={{...Fonts.fontRegular, color: Colors.gris, fontSize: 12}}>({dataUser.cantidad_valoraciones})</Text>
-                                    </View>
-                                    <Caption style={styles.caption}>Viajes 115</Caption>
-                                </View>
-                            </View>
-                            <Image
-                                source={require('../../../assets/icons/right-gris-ico.png')}
-                                style={{width: 15, height: 15, marginRight: 15}}
-                                />
-                        </TouchableNativeFeedback>
 
                         <Drawer.Section style={styles.drawerSection}>
-                                    
-                                {/* <DrawerItem 
-                                    icon={require('../../../assets/icons/billetera_menu.png')} 
-                                    title={'Mi Billetera'} 
-                                    onPress={() => props.navigation.push('MyWallet')} 
-                                    />
-                                <DrawerItem 
-                                    icon={require('../../../assets/icons/historial-ico.png')} 
-                                    title={'Viajes'} 
-                                    onPress={() => props.navigation.push('MisViajes')} 
-                                    />
-                                <DrawerItem 
-                                    icon={require('../../../assets/icons/referidos-ico.png')} 
-                                    title={'Plan Referidos'} 
-                                    onPress={() => props.navigation.push('Referidos')} 
-                                    /> */}
+
+                            <DrawerItem 
+                                // icon={data.setting_module_config.icon}
+                                title={'MARVEL API'} 
+                                onPress={() => props.navigation.push('MarvelHome')} 
+                                />
+                            {(modules) && (
+                                Object.values(modules).map((data, i) => 
+                                    <DrawerItem 
+                                        key={i}
+                                        icon={data.setting_module_config.icon}
+                                        title={data.module} 
+                                        onPress={() => (data.id_module == 13 ? props.navigation.push('Device') : Functions.alertOK('Alerta', 'Opción muy pronto disponible') )} 
+                                        />
+                                )
+                            )}
 
                         </Drawer.Section>
-                        <Drawer.Section>
-                            {/* title="Preferences" */}
-                            {/* <DrawerItem 
-                                icon={require('../../../assets/icons/locator-hover-ico.png')} 
-                                title={'Quiero ser Partner'} 
-                                onPress={() => Linking.openURL('https://appllevame.com/portal/partner/')} 
-                                /> */}
-                        </Drawer.Section>
+                       
                     </View>
                     
                 </View>
@@ -127,13 +91,10 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-      datauuid: state.user.uuid,
-      country: state.user.country,
-      location: state.location.location.coords,
-      detailsCurrency: state.location.currency,
-      dataUser: state.user.dataUser,
-      token: state.user.token,
+        dataUser: state.user.dataUser,
+        token: state.user.token,
+        modules: state.user.modules,
     };
-  }
+}
   
   export default connect(mapStateToProps)(DrawerContent);

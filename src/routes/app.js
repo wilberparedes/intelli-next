@@ -4,7 +4,7 @@ import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { SplashScreen, SliderPermission, Loading, HomeAccess, App1 } from '../screens';
+import { SplashScreen, SliderPermission, Loading, HomeAccess, App1, Home, Device, Maps, MarvelHome, DetailsComicMarvel} from '../screens';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,70 +12,49 @@ import { connect } from 'react-redux';
 
 import DrawerContent from '../screens/components/DrawerContent';
 
+
 const Drawer = createDrawerNavigator();
 function MyDrawer(props) {
   return(
       <Drawer.Navigator
+        initialRouteName="Home"
         drawerContent={props => <DrawerContent {...props} />}
         drawerPosition={'left'}
         >
-        <Drawer.Screen name="Home">
-          {() => <App1 ws={ws} {...props} />}
-        </Drawer.Screen>
-        {/* <Drawer.Screen name="Referidos" component={Referidos} /> */}
-        {/* <Drawer.Screen name="MisViajes" component={MisViajes} /> */}
-        
+        <Drawer.Screen name="Home" component={Home} />
       </Drawer.Navigator>
   );
 }
 
 
-  // const stackApp = createStackNavigator();
-  // const MenuStackApp = () => (
-  //   <stackApp.Navigator initialRouteName="HomeCategory" headerMode="none">
-  //     <stackApp.Screen 
-  //       name="HomeCategory" 
-  //       component={Home} 
-  //       />
-  //     <stackApp.Screen 
-  //       name="MyProfile" 
-  //       component={MyProfile} 
-  //       />
-  //     <stackApp.Screen 
-  //       name="MyWallet" 
-  //       component={MyWallet} 
-  //       />
-  //     <stackApp.Screen 
-  //       name="AcercaDe" 
-  //       component={AcercaDe} 
-  //       />
-  //     <stackApp.Screen 
-  //       name="Referidos" 
-  //       component={Referidos} 
-  //       />
-
-  //     <stackApp.Screen 
-  //       name="MisViajes" 
-  //       component={MisViajes} 
-  //       />
-  //     <stackApp.Screen 
-  //       name="AppTeLlevo" 
-  //       component={MyDrawer} 
-  //       />
-
-  //     <stackApp.Screen 
-  //       name="empty" 
-  //       component={empty} 
-  //       />
-
-
-  //   </stackApp.Navigator>
-  //   );
+  const stackApp = createStackNavigator();
+  const MenuStackApp = () => (
+    <stackApp.Navigator initialRouteName="Home" headerMode="none">
+      <stackApp.Screen 
+        name="Home" 
+        component={MyDrawer} 
+        />
+      <stackApp.Screen 
+        name="Device" 
+        component={Device} 
+        />
+      <stackApp.Screen 
+        name="Maps" 
+        component={Maps} 
+        />
+      <stackApp.Screen 
+        name="MarvelHome" 
+        component={MarvelHome} 
+        />
+      <stackApp.Screen 
+        name="DetailsComicMarvel" 
+        component={DetailsComicMarvel} 
+        />
+    </stackApp.Navigator>
+    );
 
 const Stack = createStackNavigator();
-
 const PERSISTENCE_KEY = 'NAVIGATION_STATE';
-
 const AppStack = ({user, tokenData, allUser}) => {
 
   const [isReady, setIsReady] = React.useState(false);
@@ -125,15 +104,13 @@ const AppStack = ({user, tokenData, allUser}) => {
         }>
         <Stack.Navigator headerMode="none" initialRouteName="SplashScreen"> 
           <Stack.Screen name="HomeAccess" component={HomeAccess} />
-          {/* <Stack.Screen 
+          <Stack.Screen 
             name="App" 
-            component={MyDrawer} 
-            /> */}
-          
+            component={MenuStackApp} 
+            />
           <Stack.Screen name="SliderPermission" component={SliderPermission} />
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="Loading" component={Loading} />
-
         </Stack.Navigator>
       </NavigationContainer>
   )

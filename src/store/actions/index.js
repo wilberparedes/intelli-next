@@ -1,7 +1,7 @@
 import * as intelliapi from './intelliApi';
-import * as apimarvel from './marvelApi';
+import * as marvelapi from './marvelApi';
 
 export const actions = { 
     intelliapi, 
-    apimarvel,
+    marvelapi,
 };

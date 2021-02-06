@@ -39,14 +39,36 @@ class SliderPermission extends Component{
         if(cpermission != 'no'){
             if(this.state.permissionGPS){
                 AsyncStorage.setItem('@permission', 'si');
-                this.props.navigation.navigate('Loading');
+                // this.props.navigation.navigate('Loading');
+                this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'Loading',
+                          params: { user: 'init' },
+                        },
+                      ],
+                    })
+                );
             }else{
                 AsyncStorage.setItem('@permission', 'no');
             }
         }else{
             if(this.state.permissionGPS){
                 AsyncStorage.setItem('@permission', 'si');
-                this.props.navigation.navigate('Loading');
+                // this.props.navigation.navigate('Loading');
+                this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'Loading',
+                          params: { user: 'init' },
+                        },
+                      ],
+                    })
+                );
             }
         }
         this.setState({ 
@@ -172,11 +194,12 @@ class SliderPermission extends Component{
                             </View>)}
 
                             {(this.state.permission) && ( <Text style={styles.title}>Te damos la bienvenida a </Text>)}
-                            {(this.state.permission) && (<Image 
+                            {(this.state.permission) && (
+                                <Image 
                                     source={require('../../../assets/logo-intelli.png')} 
-                                    style={{marginTop: -10,width: 150, height: 50, resizeMode: 'contain',}}
+                                    style={{marginVertical: 10, width: 200, height: 90, resizeMode: 'contain',}}
                                     />
-                                    )}
+                            )}
                                 
                             <Text style={styles.text}>{ this.state.permission ? '¡Ya puedes ingresar a nuestra plataforma!' : 'Para ingresar a la aplicación es necesario conceder los permisos.'}</Text>
                             {(this.state.permission) && ( 

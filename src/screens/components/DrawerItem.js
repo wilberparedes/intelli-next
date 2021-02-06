@@ -4,39 +4,30 @@ import {
   Text,
   Image,
   StyleSheet,
-  SafeAreaView,
-  Fragment,
-  TouchableOpacity,
-  StatusBar,
 } from 'react-native';
-import { Fonts, Colors, StylesGeneral } from '../../themes';
+import { Fonts, Colors } from '../../themes';
 import { connect } from 'react-redux';
 
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-
-import { Avatar, Title, Caption, Drawer, RadioButton, Paragraph, TouchableRipple, Switch } from 'react-native-paper';
+import { TouchableRipple } from 'react-native-paper';
 
 import {  
-    Button,
+  Icon,
 } from 'react-native-elements';
 
-// import URLMEDIA from '../../../url_server_media';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
-
 function DrawerItem(props){
+
+  const icon = (props.icon && props.icon.split(" ")[1] ? props.icon.split(" ")[1].split("-")[1] : null)
     return (
         <TouchableRipple onPress={props.onPress}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12,paddingHorizontal: 16}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image 
-                        source={props.icon} 
-                        style={{
-                          width: 30,
-                          height: 30,
-                          resizeMode: 'contain',
-                        }}
-                        />
-                    <Text style={{...Fonts.fontRegular, marginLeft: 25}}>{props.title}</Text> 
+                  {(icon) && (
+                    <Icon
+                      name={icon}
+                      type='font-awesome'
+                      color={Colors.primary}/>
+                  )}
+                  <Text style={{...Fonts.fontRegular, marginLeft: 25}}>{props.title}</Text> 
                 </View>
                 <View>
                   <Image

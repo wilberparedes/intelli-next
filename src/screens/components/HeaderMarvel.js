@@ -10,34 +10,30 @@ import {
   StatusBar,
   Button
 } from 'react-native';
-import { Fonts, Colors, StylesGeneral } from '../../themes';
-import { connect } from 'react-redux';
+import { Fonts, Colors, StylesGeneral, Metrics } from '../../themes';
+import { SearchBar } from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
-import URLMEDIA from '../../../url_server_media';
-
-function HeaderTitleTabs(props){
+function HeaderMarvel(props){
     return (
       <SafeAreaView style={[styles.statusBar]}>
-        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true}/>
         <View style={styles.container}>
           {/* LEFT BUTTON */}
-            {/* <TouchableOpacity 
+          <View style={{flexDirection: 'row', position: 'absolute', left: 0}}>
+            <TouchableOpacity 
               onPress={props.onClick}
-              style={[{alignItems: 'flex-start',justifyContent: 'center', position: 'absolute', left: 0, padding: 15}]}>
-              <Image 
-              source={require('../../../assets/icons/back-bk-ico.png')} 
-              style={{
-                  width: 20,
-                  height: 20,
-                  resizeMode: 'cover',
-              }}
-              />
-            </TouchableOpacity> */}
+              style={[{alignItems: 'flex-start',justifyContent: 'center', padding: 15}]}>
+              <Icon
+                name='arrow-left'
+                size={20}
+                color={'white'}
+                />
+            </TouchableOpacity>
+          </View>
           {/* CENTER BUTTON */}
           <View style={[styles.content, {alignItems: 'center', justifyContent: 'center', position: 'relative'}]}>
-            <Text style={{...Fonts.fontBold, fontSize: 18, color: 'white', paddingTop: 5}} numberOfLines={1}>{props.descripcion}</Text>
+            <Image source={require('../../../assets/logo-marvel.jpg')} style={{width: 100, height: 55, resizeMode: 'contain'}} />
           </View>
         </View>
       </SafeAreaView>
@@ -52,20 +48,20 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       alignItems: 'center',
       alignContent: 'center',
-      backgroundColor: Colors.primary,//
+      backgroundColor: '#EA2328',
       position: 'relative'
     },
     statusBar:{
       ...Platform.select({
         ios: {
-          height: 90 - 24,
+          height: 106,
         },
         android: {
-          height: 90,
+          height: 106,
         },
       }),
-      paddingTop: 25,
-      backgroundColor: Colors.primary,
+      paddingTop: 40,
+      backgroundColor: '#EA2328',
     },
     content: {
       flex: 1,
@@ -73,9 +69,9 @@ const styles = StyleSheet.create({
     title: {
       ...Fonts.fontTabBar,
       textTransform: 'uppercase',
-      color: 'white',
+      color: Colors.primaryDark,
       fontSize: 16
     }
 })
 
-export default HeaderTitleTabs;
+export default HeaderMarvel;

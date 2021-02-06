@@ -15,8 +15,6 @@ import { connect } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
-import URLMEDIA from '../../../url_server_media';
-
 function HeaderTitleBack(props){
     return (
       <SafeAreaView style={[styles.statusBar]}>
@@ -25,18 +23,15 @@ function HeaderTitleBack(props){
             <TouchableOpacity 
               onPress={props.onClick}
               style={[{alignItems: 'flex-start',justifyContent: 'center', position: 'absolute', left: 0, padding: 15}]}>
-              <Image 
-              source={require('../../../assets/icons/back-bk-ico.png')} 
-              style={{
-                  width: 20,
-                  height: 20,
-                  resizeMode: 'cover',
-              }}
-              />
+              <Icon
+                name='arrow-left'
+                size={20}
+                color={Colors.primaryDark}
+                />
             </TouchableOpacity>
           {/* CENTER BUTTON */}
           <View style={[styles.content, {alignItems: 'center', justifyContent: 'center', position: 'relative'}]}>
-            <Text style={{...Fonts.fontBold, fontSize: 18, color: 'white', paddingTop: 5}} numberOfLines={1}>{props.descripcion}</Text>
+            <Text style={{...Fonts.fontBold, fontSize: 18, color: Colors.primaryDark, paddingTop: 5}} numberOfLines={1}>{props.descripcion}</Text>
           </View>
         </View>
       </SafeAreaView>
@@ -51,19 +46,18 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       alignItems: 'center',
       alignContent: 'center',
-      backgroundColor: Colors.primary,//
+      backgroundColor: Colors.primarySemiLight,//
       position: 'relative'
     },
     statusBar:{
       ...Platform.select({
         ios: {
-          height: 90 - 24,
+          height: 66,
         },
         android: {
-          height: 90,
+          height: 66,
         },
       }),
-      paddingTop: 25,
       backgroundColor: Colors.primary,
     },
     content: {
@@ -72,7 +66,7 @@ const styles = StyleSheet.create({
     title: {
       ...Fonts.fontTabBar,
       textTransform: 'uppercase',
-      color: 'white',
+      color: Colors.primaryDark,
       fontSize: 16
     }
 })

@@ -45,6 +45,7 @@ class Loading extends Component{
 
     functionss(){
         this.checkIfUserIsAlreadyLogged();
+        // this.props.navigation.navigate('HomeAccess');
         // Geocoder.init(API_KEY); // use a valid API key
     }
     
@@ -131,7 +132,6 @@ class Loading extends Component{
             }
         }else{
             console.log('user no')
-            // Toast.show('Sesión caducada, por favor, inicie sesión')
             this.props.navigation.navigate('HomeAccess');
         }
     }

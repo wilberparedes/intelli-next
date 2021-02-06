@@ -1,27 +1,21 @@
+import { actions } from '../../store';
 import React, { Component } from 'react';
 import {  
     View,
     Text,
     StyleSheet,
     Image,
-    ImageBackground,
     SafeAreaView,
     KeyboardAvoidingView,
-    Alert,
     BackHandler,
-    Switch,
-    TouchableHighlight,
-    // CheckBox,
     StatusBar
  } from 'react-native';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { CommonActions } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
 
 import { connect } from  'react-redux';
 import { Colors, Metrics, StylesGeneral, Fonts, Functions } from '../../themes';
-
 
 import {  
     Input,
@@ -29,11 +23,7 @@ import {
 } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
-// import Header from '../../sections/components/header-access';
-// import API from '../../../providers/api';
-
-
-class HomeAccess extends Component{
+class HomeAccess extends Component {
 
     constructor(props){
         super(props);
@@ -47,9 +37,6 @@ class HomeAccess extends Component{
     }
 
     async componentDidMount(){
-        // OneSignal.addEventListener('ids', (device) => {
-        //     this.setState({ userId:device.userId });
-        // });
 
         const username2 = await AsyncStorage.getItem('@storage_Key');
         const pass = await AsyncStorage.getItem('@pass');
@@ -64,8 +51,6 @@ class HomeAccess extends Component{
             this.props.navigation.navigate('HomeAccess');
             return true;
         });
-
-        console.log(this.props)
 
     }
 
@@ -84,13 +69,8 @@ class HomeAccess extends Component{
 
     toggleRememberMe = value => {
         this.setState({ rememberMe: value })
-        if (value === true) {
-            //user wants to be remembered.
-            this.rememberUser();
-        }
-        else{
-            this.forgetUser();
-        }
+        if (value === true) this.rememberUser();
+        else this.forgetUser();
     }
     
     rememberUser = async () => {
@@ -104,14 +84,11 @@ class HomeAccess extends Component{
     }
 
     switchRemember = () =>{
-        if(this.state.rememberMe){
-            this.setState({rememberMe: false});
-        }else{
-            this.setState({rememberMe: true});
-        }
+        this.setState({rememberMe: !this.state.rememberMe});
     }
 
     loginHandlePress = async () => {
+        const { aLogin } = this.props;
         console.log('aqui voy..');
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
         console.log(this.state);
@@ -128,29 +105,52 @@ class HomeAccess extends Component{
         }
         else {
             this.setState({loading: true});
-            const rLogin = API.Login(this.state.username, this.state.password, 'CO', 'Atlántico', 'Barranquilla') //this.props.detailsLocality.country, this.props.detailsLocality.administrative_area_level_1, this.props.detailsLocality.locality
+            console.log(this.props);
+            const rLogin = aLogin(this.state.username, this.state.password)
                 .then((data) => data.json())
                 .then((dataJson) => {
                     console.log(dataJson);
-                    if(dataJson.ok){
+                    if(!dataJson.error){
                         const token = dataJson.token;
+                        this.props.dispatch({
+                            type: 'SET_TOKEN',
+                            payload: {
+                                token
+                            }
+                        })
                         this.props.dispatch({
                             type: 'SET_USER',
                             payload: {
-                                token,
-                                userData: dataJson.usuario
+                                ...dataJson.user
                             }
                         })
-                        // this.props.navigation.navigate('Loading');
-                        // this.props.dispatch(
-                        //     NavigationActions.navigate({
-                        //       routeName: 'Loading'
-                        //     })
-                        // )
+                        this.props.dispatch({
+                            type: 'SET_MODULES',
+                            payload: {
+                                ...dataJson.modules
+                            }
+                        })
+                        this.props.dispatch({
+                            type: 'SET_ALL',
+                            payload: {
+                                ...dataJson
+                            }
+                        })
+                        this.props.navigation.dispatch(
+                            CommonActions.reset({
+                              index: 0,
+                              routes: [
+                                {
+                                  name: 'Loading',
+                                  params: { user: 'init' },
+                                },
+                              ],
+                            })
+                        );
                           
                     }else{
                         this.setState({loading: false});
-                        Functions.alertOK('Advertencia', dataJson.message, true);
+                        Functions.alertOK('Advertencia', this.rMessage(dataJson.msg), true);
                     }
                 })
                 .catch((error) => {
@@ -161,14 +161,27 @@ class HomeAccess extends Component{
         }
     }
     
+    rMessage = (e) => {
+        let msg = "";
+        switch (e) {
+            case "invalid_credentials":
+                msg = "Contraseña incorrecta, por favor, verifique e intente de nuevo.";
+                break;
+            case "user_blocked":
+                msg = "Usuario bloqueado temporalmente, por demasiados intentos por iniciar sesión.";
+                break;
+            default:
+                msg = "Ocurrió un error al tratar de iniciar sesión, por favor, intente de nuevo."
+                break;
+        }
+        return msg
+    }
+    
 
     render(){
 
         return(
             <SafeAreaView style={[styles.safContainer, { backgroundColor: Colors.primarySemiLight }]}>
-                {/* <ImageBackground source={require('../../../assets/image-home-login.png')} style={styles.imageBackground} > */}
-
-                    {/* <Header onPress={()=> { this.props.navigation.navigate('HomeAccess'); }} /> */}
 
                     <View style={styles.container}>
                         
@@ -196,7 +209,7 @@ class HomeAccess extends Component{
                                 textContentType={'emailAddress'}
                                 inputContainerStyle={StylesGeneral.inputWhiteWithBorder}
                                 placeholderTextColor={Colors.placeholderColorPrimary}
-                                onChangeText={(value) => this.setState({username: value.toLowerCase()})}
+                                onChangeText={(value) => this.setState({username: value})}
                                 value={this.state.username}
                                 />
 
@@ -220,33 +233,24 @@ class HomeAccess extends Component{
                                 value={this.state.password}
                                 />
 
-                            <View style={{flex: 1, flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', alignContent:'flex-start', textAlign:'center', marginvertical: 16, paddingVertical: 16 }}>
+                            <View style={{flex: 1, flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', alignContent:'flex-start', textAlign:'center', marginvertical: 16, paddingVertical: 16 , marginHorizontal: 5}}>
                                 <CheckBox value={this.state.rememberMe}  tintColors={{ true: Colors.second, false: Colors.second }} onValueChange={(value) => this.toggleRememberMe(value)}/>
                                 <Text onPress={()=> { this.switchRemember() }} style={[styles.textWhite, {fontSize: 16, textAlign: 'left', color: '#fff'}]}>Recuérdame</Text>
                             </View>
                         </KeyboardAvoidingView>
-
-                        {/* <Button
-                            title="Iniciar Sesión"
-                            titleStyle={StylesGeneral.fontPrimaryButton}
-                            buttonStyle={StylesGeneral.buttonSecond}
-                            containerStyle={[{ width: '100%', paddingHorizontal: 10 }, StylesGeneral.marginvertical]}
-                            onPress={this.loginHandlePress}
-                            // loading={this.state.loading}
-                            // disabled={this.state.loading}
-                            /> */}
+                      
                         <Button
                             title="Iniciar Sesión"
                             titleStyle={StylesGeneral.fontPrimaryButton}
                             buttonStyle={StylesGeneral.buttonSecond}
-                            containerStyle={[{ width: '100%', }, StylesGeneral.marginvertical]}
-                            // onPress={() => this.props.navigation.navigate('Loading') }
+                            containerStyle={[{width: Metrics.screenWidth - 16 }, StylesGeneral.marginvertical]}
+                            onPress={this.loginHandlePress}
+                            loading={this.state.loading}
+                            disabled={this.state.loading}
                             />
                         
                     </View>
-                
-                
-                {/* </ImageBackground> */}
+
                 <StatusBar barStyle="light-content" backgroundColor={Colors.primaryDark}/>
 
             </SafeAreaView>
@@ -262,13 +266,6 @@ const styles = StyleSheet.create({
         height: Metrics.screenHeight,
         width: Metrics.screenWidth,
         flex:1
-    },
-    imageBackground: {
-        // flex: 1,
-        // height: Metrics.screenHeight,
-        // width: Metrics.screenWidth,
-        // alignContent: 'stretch',
-        // resizeMode: 'contain'
     },
     container: {
         ...StylesGeneral.paddingContent,
@@ -286,10 +283,6 @@ const styles = StyleSheet.create({
         width: Metrics.screenWidth/1.5,
         // marginTop: Metrics.screenHeight/70.0
     },
-    contentText:{
-        flexDirection: 'row',
-        justifyContent:'flex-end'
-    },
     textWhite:{
         ...Fonts.fontText,
         flex:1,
@@ -301,21 +294,19 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
         textAlign:'center'
     },
-    contentButton:{
-        width:'100%',
-        textAlign: 'right',
-        flexDirection: 'row',
-    },
-    //nuevo
-    textButton:{
-        ...StylesGeneral.fontPrimaryButton
-    }
-    // 0px 4px 4px rgba(0, 0, 0, 0.25);
 })
 
 function mapStateToProps(state){
     return{
-        uuid: state.user.uuid,
     }
 }
-export default connect(mapStateToProps)(HomeAccess);
+
+
+const mapDispatchToProps = dispatch => ({
+    aLogin: (email, password) => 
+        dispatch(actions.intelliapi.aLogin(email, password)),
+    dispatch
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeAccess);

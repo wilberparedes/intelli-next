@@ -8,6 +8,8 @@ import { store, persistor, actions } from './src/store';
 
 import AppStack from './src/routes/app';
 
+console.disableYellowBox = true;
+
 const App = () => {
 
   useEffect(() => {

@@ -1,22 +1,19 @@
 
-import URL from '../../../url_backend';
-const BASE_API = `${URL}restaurante/`;
+const URL = 'https://gateway.marvel.com/';
+const BASE_API = `${URL}v1/public/`;
+import md5 from 'md5';
 
-export const DataHome = (token, currencyData, codigo, direccionpedido) => async dispatch => {
-    var data = {
-        ...currencyData,
-        ...direccionpedido,
-        codigo
-    }
-    console.log(data);
-    const query = await fetch(`${BASE_API}users/home/`, {
-        method: 'POST',
+
+export const aDataComics = (limit, offest) => async dispatch => {
+    const ts = 1;
+    var msg = ts + '09617e9b0b801bfebab20fdb5ddaebd8b6b78fb6' + '06de8076edb29bfb7c0352ef71eec981';
+    const HASH = '109617e9b0b801bfebab20fdb5ddaebd8b6b78fb606de8076edb29bfb7c0352ef71eec981' //md5(msg);
+    const query = await fetch(`${BASE_API}comics?ts=${ts}&apikey=06de8076edb29bfb7c0352ef71eec981&hash=${HASH}&orderBy=title&limit=${limit}&offset=${offest}`, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Token '+token,
+            // Authorization: 'Token '+token,
         },
-        body: JSON.stringify(data)
     })
-    
     return query;
 }
